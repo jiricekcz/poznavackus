@@ -1,6 +1,7 @@
 <script lang="ts">
   import Guesser from "./components/Guesser.svelte";
-  let collectionId = 0;
+  var url = new URLSearchParams(window.location.search);
+  let collectionId = parseInt(url.get("collectionId")) | 0;
 </script>
 
 <main>
