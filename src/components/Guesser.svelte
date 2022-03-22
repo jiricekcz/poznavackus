@@ -61,6 +61,9 @@
         attempts.update((v) => v + 1);
         refresh();
     }
+    async function takeToApiLink(): Promise<void> {
+        window.open(element.getUrl(), "_blank");
+    }
     document.addEventListener("keyup", (ev) => {
         if (ev.key == "Enter") {
             validate();
@@ -103,6 +106,9 @@
                     </td>
                     <td>
                         <button on:click={reveal} class="red">IDK</button>
+                    </td>
+                    <td>
+                        <button on:click={takeToApiLink} class="blue">API</button>
                     </td>
                 </tr>
             </tbody>
@@ -162,6 +168,9 @@
     }
     .green { 
         color: green;
+    }
+    .blue {
+        color: blue;
     }
     .element span { 
         height: 5vh;
