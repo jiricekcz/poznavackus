@@ -30,15 +30,15 @@
             await delay(1000);
             input = "";
             refresh();
-            correctTimes.update(v => v + 1);
-            attempts.update(v => v + 1);
+            correctTimes.update((v) => v + 1);
+            attempts.update((v) => v + 1);
         } else {
             correct = Correctness.Incorrect;
             await delay(2000);
             input = "";
             correct = Correctness.NotGuessed;
             inputEl.focus();
-            attempts.update(v => v + 1);
+            attempts.update((v) => v + 1);
         }
     }
     async function refresh(): Promise<void> {
@@ -55,9 +55,8 @@
         input = element.name;
         await delay(2000);
         input = "";
-        attempts.update(v => v + 1);
+        attempts.update((v) => v + 1);
         refresh();
-
     }
     document.addEventListener("keyup", (ev) => {
         if (ev.key == "Enter") {
@@ -97,7 +96,10 @@
                         />
                     </td>
                     <td>
-                        <button on:click={validate}>Validate</button>
+                        <button on:click={validate} class="green">Validate</button>
+                    </td>
+                    <td>
+                        <button on:click={reveal} class="red">IDK</button>
                     </td>
                 </tr>
             </tbody>
@@ -146,5 +148,11 @@
         font-size: 5vh;
         height: 5vh;
         margin: auto;
+    }
+    .red {
+        color: red;
+    }
+    .green { 
+        color: green;
     }
 </style>
