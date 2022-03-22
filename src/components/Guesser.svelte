@@ -50,9 +50,21 @@
             setTimeout(resolve, delay);
         });
     }
+    async function reveal(): Promise<void> {
+        correct = Correctness.Incorrect;
+        input = element.name;
+        await delay(2000);
+        input = "";
+        attempts.update(v => v + 1);
+        refresh();
+
+    }
     document.addEventListener("keyup", (ev) => {
         if (ev.key == "Enter") {
             validate();
+        }
+        if (ev.key == "Escape") {
+            reveal();
         }
     });
 </script>
