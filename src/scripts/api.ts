@@ -85,6 +85,9 @@ namespace API {
         getRandomImage(): string {
             return this.imageUrls[Math.floor(Math.random() * this.imageUrls.length)];
         }
+        isValidName(name: string): boolean {
+            return name == this.name || this.otherValidNames.includes(name);
+        }
     }
 
     export interface PoznvackusData {
