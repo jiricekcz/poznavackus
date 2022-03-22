@@ -67,14 +67,17 @@ namespace API {
         public readonly name: string;
         public readonly otherValidNames: string[];
         public readonly imageUrls: string[];
+        public readonly tip?: string;
         constructor(
             name: string,
             otherValidNames: string[],
-            imageUrls: string[]
+            imageUrls: string[],
+            tip?: string
         ) {
             this.name = name;
             this.otherValidNames = otherValidNames;
             this.imageUrls = imageUrls;
+            this.tip = tip;
         }
 
         public static async fetch(collectionId: number, elementId: number) {
@@ -82,7 +85,7 @@ namespace API {
                 `${URL}/${collectionId}/${elementId}.json`
             );
             const data: ElementData = await response.json();
-            return new Element(data.name, data.otherValidNames, data.images);
+            return new Element(data.name, data.otherValidNames, data.images, data.tip);
         }
 
         getRandomImage(): string {
@@ -121,6 +124,7 @@ namespace API {
         name: string;
         otherValidNames: string[];
         images: string[];
+        tip?: string;
     }
 }
 export default API;

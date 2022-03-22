@@ -9,7 +9,7 @@
         Incorrect,
         NotGuessed,
     }
-
+    let showTip = false;
     let inputEl: HTMLInputElement;
     let correct: Correctness = Correctness.NotGuessed;
     let collection: API.Collection;
@@ -43,6 +43,7 @@
     }
     async function refresh(): Promise<void> {
         element = await collection.getRandomElement();
+        showTip = false;
         correct = Correctness.NotGuessed;
     }
     function delay(delay: number): Promise<void> {
@@ -53,7 +54,9 @@
     async function reveal(): Promise<void> {
         correct = Correctness.Incorrect;
         input = element.name;
-        await delay(2000);
+        showTip = true;
+        let additionalDelay = element.tip?.length * 1000 / 24 || 0; // Average reading speed is 240 words per minute ~ 24 characters per second
+        await delay(2000 + additionalDelay);
         input = "";
         attempts.update((v) => v + 1);
         refresh();
@@ -104,6 +107,11 @@
                 </tr>
             </tbody>
         </table>
+        {#if showTip && element?.tip} 
+            <div class="element">
+                <span>TIP: {element.tip}</span>
+            </div>
+        {/if}
     </div>
 </main>
 <svelte:head>
@@ -131,7 +139,7 @@
         border-radius: 25px;
     }
     .element {
-        display: flex;
+        display: grid;
         padding-top: 2vh;
         padding-bottom: 2vh;
     }
@@ -154,5 +162,9 @@
     }
     .green { 
         color: green;
+    }
+    .element span { 
+        height: 5vh;
+        margin: auto;
     }
 </style>
