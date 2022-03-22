@@ -110,10 +110,10 @@ namespace API {
         }
         isValidName(name: string): boolean {
             return (
-                name.toLowerCase() == this.name.toLowerCase() ||
+                name.toLowerCase().trim() == this.name.toLowerCase().trim() ||
                 this.otherValidNames
-                    .map((v) => v.toLowerCase())
-                    .includes(name.toLowerCase())
+                    .map((v) => v.toLowerCase().trim())
+                    .includes(name.toLowerCase().trim())
             );
         }
         getUrl(): string {
