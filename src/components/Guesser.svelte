@@ -1,7 +1,14 @@
 <script lang="ts">
     import API from "../scripts/api";
+    import { Stats } from "../scripts/store";
+    let correctTimes = Stats.correct;
+    let attempts = Stats.attempts;
     export let collectionId: number;
-    enum Correctness { Correct, Incorrect, NotGuessed }
+    enum Correctness {
+        Correct,
+        Incorrect,
+        NotGuessed,
+    }
 
     let inputEl: HTMLInputElement;
     let correct: Correctness = Correctness.NotGuessed;
@@ -22,12 +29,15 @@
             await delay(1000);
             input = "";
             refresh();
+            correctTimes.update(v => v + 1);
+            attempts.update(v => v + 1);
         } else {
             correct = Correctness.Incorrect;
             await delay(2000);
             input = "";
             correct = Correctness.NotGuessed;
             inputEl.focus();
+            attempts.update(v => v + 1);
         }
     }
     async function refresh(): Promise<void> {
@@ -39,17 +49,20 @@
             setTimeout(resolve, delay);
         });
     }
-    document.addEventListener("keyup", (ev) => { 
+    document.addEventListener("keyup", (ev) => {
         if (ev.key == "Enter") {
             validate();
         }
-    })
+    });
 </script>
 
 <main class="container">
     <div class="element">
+        <p>{$correctTimes} / {$attempts}</p>
+    </div>
+    <div class="element">
         {#if element}
-            <img src={element.getRandomImage()} alt="T"/>
+            <img src={element.getRandomImage()} alt="T" />
         {/if}
     </div>
     <div class="element">
@@ -57,7 +70,18 @@
             <tbody>
                 <tr>
                     <td>
-                        <input bind:this={inputEl} autofocus disabled="{correct != Correctness.NotGuessed}" type="text" bind:value={input} class="{correct == Correctness.NotGuessed ? "neutral" : correct == Correctness.Correct ? "correct" : "incorrect"}"/>
+                        <input
+                            bind:this={inputEl}
+                            autofocus
+                            disabled={correct != Correctness.NotGuessed}
+                            type="text"
+                            bind:value={input}
+                            class={correct == Correctness.NotGuessed
+                                ? "neutral"
+                                : correct == Correctness.Correct
+                                ? "correct"
+                                : "incorrect"}
+                        />
                     </td>
                     <td>
                         <button on:click={validate}>Validate</button>
@@ -69,31 +93,32 @@
 </main>
 <svelte:head>
     {#if collection}
-    <title>{collection.name}</title>
+        <title>{collection.name}</title>
     {/if}
 </svelte:head>
+
 <style>
     .correct {
-        color: green
+        color: green;
     }
     .incorrect {
-        color: red
+        color: red;
     }
     .neutral {
         color: gray;
     }
-    .container {     
+    .container {
         margin: auto;
-        width: 50vw;
+        width: 60vw;
         margin-top: 5vh;
         background-color: rgba(57, 128, 0, 0.233);
-        padding: 5vh;
+        padding: 2vh;
         border-radius: 25px;
     }
     .element {
         display: flex;
-        padding-top: 3vh;
-        padding-bottom: 3vh;
+        padding-top: 2vh;
+        padding-bottom: 2vh;
     }
     .element img {
         margin: auto;
@@ -102,6 +127,11 @@
     .element table {
         margin: auto;
         width: 10vw;
-        
+    }
+
+    .element p {
+        font-size: 5vh;
+        height: 5vh;
+        margin: auto;
     }
 </style>
