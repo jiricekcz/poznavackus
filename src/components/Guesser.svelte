@@ -67,7 +67,11 @@
         </table>
     </div>
 </div>
-
+<svelte:head>
+    {#if collection}
+    <title>{collection.name}</title>
+    {/if}
+</svelte:head>
 <style>
     .correct {
         color: green
