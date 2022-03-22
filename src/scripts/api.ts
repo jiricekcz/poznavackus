@@ -1,5 +1,6 @@
 namespace API {
     export const URL = `https://data.poznavacka.jiri.pro`;
+    export const GithubURL = "https://github.com/jiricekcz/poznavackus-data/blob/main/"
     export class Poznvackus {
         public readonly collectionCount: number;
         public readonly collectionMetadata: CollectionMetadata[];
@@ -26,20 +27,25 @@ namespace API {
             if (this.collectionCache[id]) {
                 return this.collectionCache[id];
             }
-            this.collectionCache[id] = await Collection.fetch(id);
+            this.collectionCache[id] = await Collection.fetch(this, id);
             return this.getCollection(id);
+        }
+        getUrl(): string {
+            return `${API.GithubURL}/index.json`;
         }
     }
     export class Collection {
+        public poznavackus: Poznvackus;
         public readonly name: string;
         public readonly id: number;
         public elementCount: number;
 
         private elementCache: Array<Element> = [];
-        constructor(name: string, id: number, elementCount: number) {
+        constructor(poznavackus: Poznvackus, name: string, id: number, elementCount: number) {
             this.name = name;
             this.id = id;
             this.elementCount = elementCount;
+            this.poznavackus = poznavackus;
         }
 
         async getElement(id: number): Promise<Element> {
@@ -47,45 +53,54 @@ namespace API {
             if (this.elementCache[id]) {
                 return this.elementCache[id];
             }
-            this.elementCache[id] = await Element.fetch(this.id, id);
+            this.elementCache[id] = await Element.fetch(this, id);
             return this.getElement(id);
         }
         async getRandomElement(): Promise<Element> {
             return this.getElement(this.randomElementId());
         }
-        public static async fetch(id: number): Promise<Collection> {
+        public static async fetch(poznavackus: Poznvackus, id: number): Promise<Collection> {
             const response = await fetch(`${URL}/${id}/index.json`);
             const data: CollectionData = await response.json();
-            return new Collection(data.name, data.id, data.elementCount);
+            return new Collection(poznavackus, data.name, data.id, data.elementCount);
         }
 
         private randomElementId() {
             return Math.floor(Math.random() * this.elementCount);
         }
+        getUrl() {
+            return `${API.GithubURL}/${this.id}/index.json`;
+        }
     }
     export class Element {
+        public readonly collection: Collection;
         public readonly name: string;
+        public readonly id: number;
         public readonly otherValidNames: string[];
         public readonly imageUrls: string[];
         public readonly tip?: string;
         constructor(
+            collection: Collection,
+            id: number,
             name: string,
             otherValidNames: string[],
             imageUrls: string[],
             tip?: string
         ) {
+            this.id = id
+            this.collection = collection;
             this.name = name;
             this.otherValidNames = otherValidNames;
             this.imageUrls = imageUrls;
             this.tip = tip;
         }
 
-        public static async fetch(collectionId: number, elementId: number) {
+        public static async fetch(collection: Collection, elementId: number) {
             const response = await fetch(
-                `${URL}/${collectionId}/${elementId}.json`
+                `${URL}/${collection.id}/${elementId}.json`
             );
             const data: ElementData = await response.json();
-            return new Element(data.name, data.otherValidNames, data.images, data.tip);
+            return new Element(collection, elementId, data.name, data.otherValidNames, data.images, data.tip);
         }
 
         getRandomImage(): string {
@@ -100,6 +115,9 @@ namespace API {
                     .map((v) => v.toLowerCase())
                     .includes(name.toLowerCase())
             );
+        }
+        getUrl(): string {
+            return `${API.GithubURL}/${this.collection.id}/${this.id}.json`;
         }
     }
 
