@@ -46,13 +46,13 @@
     })
 </script>
 
-<div>
-    <div>
+<main class="container">
+    <div class="element">
         {#if element}
-            <img src={element.getRandomImage()} alt="T" width ="512px"/>
+            <img src={element.getRandomImage()} alt="T"/>
         {/if}
     </div>
-    <div>
+    <div class="element">
         <table>
             <tbody>
                 <tr>
@@ -66,7 +66,7 @@
             </tbody>
         </table>
     </div>
-</div>
+</main>
 <svelte:head>
     {#if collection}
     <title>{collection.name}</title>
@@ -81,5 +81,27 @@
     }
     .neutral {
         color: gray;
+    }
+    .container {     
+        margin: auto;
+        width: 50vw;
+        margin-top: 5vh;
+        background-color: rgba(57, 128, 0, 0.233);
+        padding: 5vh;
+        border-radius: 25px;
+    }
+    .element {
+        display: flex;
+        padding-top: 3vh;
+        padding-bottom: 3vh;
+    }
+    .element img {
+        margin: auto;
+        height: 60vh;
+    }
+    .element table {
+        margin: auto;
+        width: 10vw;
+        
     }
 </style>
