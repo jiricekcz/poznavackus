@@ -3,15 +3,16 @@ namespace API {
     export class Poznvackus {
         public readonly collectionCount: number;
         public readonly collectionMetadata: CollectionMetadata[];
-        
+
         private collectionCache: Array<Collection> = [];
 
-        constructor(collectionCount: number, collectionMetadata: CollectionMetadata[]) {
+        constructor(
+            collectionCount: number,
+            collectionMetadata: CollectionMetadata[]
+        ) {
             this.collectionCount = collectionCount;
             this.collectionMetadata = collectionMetadata;
         }
-
-        
 
         public static async fetch(): Promise<Poznvackus> {
             const response = await fetch(`${URL}/index.json`);
@@ -28,7 +29,6 @@ namespace API {
             this.collectionCache[id] = await Collection.fetch(id);
             return this.getCollection(id);
         }
-
     }
     export class Collection {
         public readonly name: string;
@@ -43,9 +43,7 @@ namespace API {
         }
 
         async getElement(id: number): Promise<Element> {
-        
-            if (id >= this.elementCount)
-                throw new Error("Invalid Element ID.");
+            if (id >= this.elementCount) throw new Error("Invalid Element ID.");
             if (this.elementCache[id]) {
                 return this.elementCache[id];
             }
@@ -64,29 +62,41 @@ namespace API {
         private randomElementId() {
             return Math.floor(Math.random() * this.elementCount);
         }
-
     }
     export class Element {
         public readonly name: string;
         public readonly otherValidNames: string[];
         public readonly imageUrls: string[];
-        constructor(name: string, otherValidNames: string[], imageUrls: string[]) {
+        constructor(
+            name: string,
+            otherValidNames: string[],
+            imageUrls: string[]
+        ) {
             this.name = name;
             this.otherValidNames = otherValidNames;
             this.imageUrls = imageUrls;
         }
 
         public static async fetch(collectionId: number, elementId: number) {
-            const response = await fetch(`${URL}/${collectionId}/${elementId}.json`);
+            const response = await fetch(
+                `${URL}/${collectionId}/${elementId}.json`
+            );
             const data: ElementData = await response.json();
             return new Element(data.name, data.otherValidNames, data.images);
         }
 
         getRandomImage(): string {
-            return this.imageUrls[Math.floor(Math.random() * this.imageUrls.length)];
+            return this.imageUrls[
+                Math.floor(Math.random() * this.imageUrls.length)
+            ];
         }
         isValidName(name: string): boolean {
-            return name == this.name || this.otherValidNames.includes(name);
+            return (
+                name.toLowerCase() == this.name.toLowerCase() ||
+                this.otherValidNames
+                    .map((v) => v.toLowerCase())
+                    .includes(name.toLowerCase())
+            );
         }
     }
 
