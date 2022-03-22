@@ -1,4 +1,4 @@
-<script lang="typescript">
+<script lang="ts">
 	export let name: string;
 	let params = new URLSearchParams(window.location.search);
 	name = params.get("name") || "World";
