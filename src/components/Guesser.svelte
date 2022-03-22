@@ -24,6 +24,7 @@
     let input: string;
 
     async function validate(): Promise<void> {
+        if (input == "") return;
         if (element.isValidName(input)) {
             correct = Correctness.Correct;
             await delay(1000);
