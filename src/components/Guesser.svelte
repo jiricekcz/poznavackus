@@ -1,8 +1,12 @@
 <script lang="ts">
     import API from "../scripts/api";
-    import { Stats } from "../scripts/store";
-    let correctTimes = Stats.correct;
-    let attempts = Stats.attempts;
+    import {
+        stats,
+        ratioString,
+        addMistake,
+        addCorrect,
+    } from "../scripts/store";
+    import * as Store from "svelte/store";
     export let collectionId: number;
     enum Correctness {
         Correct,
@@ -14,10 +18,16 @@
     let correct: Correctness = Correctness.NotGuessed;
     let collection: API.Collection;
     let element: API.Element;
+    let image: string;
+
+    let correctnessRatio: string = "";
+
     API.Poznvackus.fetch().then((p) => {
         p.getCollection(collectionId).then(async (c) => {
             collection = c;
             element = await c.getRandomElement();
+            image = element.getRandomImage();
+            correctnessRatio = await ratioString(collection.id);
         });
     });
 
@@ -30,21 +40,22 @@
             await delay(1000);
             input = "";
             refresh();
-            correctTimes.update((v) => v + 1);
-            attempts.update((v) => v + 1);
+            addCorrect(collection.id, element.id, image);
         } else {
             correct = Correctness.Incorrect;
             await delay(2000);
             input = "";
             correct = Correctness.NotGuessed;
             inputEl.focus();
-            attempts.update((v) => v + 1);
+            addMistake(collection.id, element.id, image);
         }
     }
     async function refresh(): Promise<void> {
         element = await collection.getRandomElement();
+        image = element.getRandomImage();
         showTip = false;
         correct = Correctness.NotGuessed;
+        correctnessRatio = await ratioString(collection.id);
     }
     function delay(delay: number): Promise<void> {
         return new Promise<void>((resolve) => {
@@ -55,10 +66,10 @@
         correct = Correctness.Incorrect;
         input = element.name;
         showTip = true;
-        let additionalDelay = element.tip?.length * 1000 / 24 || 0; // Average reading speed is 240 words per minute ~ 24 characters per second
+        let additionalDelay = (element.tip?.length * 1000) / 24 || 0; // Average reading speed is 240 words per minute ~ 24 characters per second
         await delay(2000 + additionalDelay);
         input = "";
-        attempts.update((v) => v + 1);
+        addMistake(collection.id, element.id, image);
         refresh();
     }
     async function takeToApiLink(): Promise<void> {
@@ -76,7 +87,9 @@
 
 <main class="container">
     <div class="element">
-        <p>{$correctTimes} / {$attempts}</p>
+        {#if collection}
+            <p>{correctnessRatio}</p>
+        {/if}
     </div>
     <div class="element">
         {#if element}
@@ -102,18 +115,22 @@
                         />
                     </td>
                     <td>
-                        <button on:click={validate} class="green">Validate</button>
+                        <button on:click={validate} class="green"
+                            >Validate</button
+                        >
                     </td>
                     <td>
                         <button on:click={reveal} class="red">IDK</button>
                     </td>
                     <td>
-                        <button on:click={takeToApiLink} class="blue">API</button>
+                        <button on:click={takeToApiLink} class="blue"
+                            >API</button
+                        >
                     </td>
                 </tr>
             </tbody>
         </table>
-        {#if showTip && element?.tip} 
+        {#if showTip && element?.tip}
             <div class="element">
                 <span>TIP: {element.tip}</span>
             </div>
@@ -166,13 +183,13 @@
     .red {
         color: red;
     }
-    .green { 
+    .green {
         color: green;
     }
     .blue {
         color: blue;
     }
-    .element span { 
+    .element span {
         height: 5vh;
         margin: auto;
     }
