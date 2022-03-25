@@ -4,7 +4,7 @@ const defaultStats: Stats = {
     collections: [],
 };
 let s = localStorage.getItem("stats");
-if (!s.startsWith("{")) s = JSON.stringify(defaultStats);
+if (!s?.startsWith("{")) s = JSON.stringify(defaultStats);
 console.log(s);
 export const stats = Store.writable<Stats>(
     JSON.parse(s)
