@@ -26,6 +26,6 @@
 
 <style>
     .elementImg {
-        width: 40 vw;
+        width: 40vw;
     }
 </style>
