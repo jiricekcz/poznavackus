@@ -18,8 +18,14 @@
         {#each els as el}
             <div>
                 <h2>{el.name}</h2>
-                <img src={el.getRandomImage()} alt="" />
+                <img class="elementImg" src={el.getRandomImage()} alt="" />
             </div>
         {/each}
     </ul>
 </main>
+
+<style>
+    .elementImg {
+        width: 40 vw;
+    }
+</style>
