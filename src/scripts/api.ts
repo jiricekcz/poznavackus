@@ -16,7 +16,7 @@ namespace API {
         }
 
         public static async fetch(): Promise<Poznvackus> {
-            const response = await fetch(`${URL}/index.json`, {mode: "no-cors"});
+            const response = await fetch(`${URL}/index.json`);
             const data: PoznvackusData = await response.json();
             return new Poznvackus(data.collections.length, data.collections);
         }
@@ -60,7 +60,7 @@ namespace API {
             return this.getElement(this.randomElementId());
         }
         public static async fetch(poznavackus: Poznvackus, id: number): Promise<Collection> {
-            const response = await fetch(`${URL}/${id}/index.json`, {mode: "no-cors"});
+            const response = await fetch(`${URL}/${id}/index.json`);
             const data: CollectionData = await response.json();
             return new Collection(poznavackus, data.name, data.id, data.elementCount);
         }
