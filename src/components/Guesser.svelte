@@ -76,6 +76,7 @@
         window.open(element.getUrl(), "_blank");
     }
     document.addEventListener("keyup", (ev) => {
+        if (correct != Correctness.NotGuessed) return;
         if (ev.key == "Enter") {
             validate();
         }
