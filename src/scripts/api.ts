@@ -110,14 +110,25 @@ namespace API {
         }
         isValidName(name: string): boolean {
             return (
-                name.toLowerCase().trim() == this.name.toLowerCase().trim() ||
+                this.getStandard(name) == this.getStandard(this.name) ||
                 this.otherValidNames
-                    .map((v) => v.toLowerCase().trim())
-                    .includes(name.toLowerCase().trim())
+                    .map((v) => this.getStandard(v))
+                    .includes(this.getStandard(name))
             );
         }
         getUrl(): string {
             return `${API.GithubURL}/${this.collection.id}/${this.id}.json`;
+        }
+        getStandard(name: string): string {
+            let nameCharArray = name.toLowerCase().trim().split("")
+            let czechChars = "áäčďéěíĺľňóôőöŕšťúůűüýřž"
+            let standardChars = "aacdeeillnoooorstuuuuyrz"
+            
+            for (let i = 0; i < nameCharArray.length; i++) {
+                const charIndex = czechChars.indexOf(nameCharArray[i]);
+                if(charIndex != -1) nameCharArray[charIndex] = standardChars[charIndex]
+            }
+            return nameCharArray.join("");
         }
     }
 
