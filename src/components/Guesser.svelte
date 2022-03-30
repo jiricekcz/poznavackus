@@ -116,26 +116,15 @@
                         />
                     </td>
                     <td>
-                        <button
-                            on:click={validate}
-                            class="green"
-                            disabled={correct != Correctness.NotGuessed}
+                        <button on:click={validate} class="green" disabled={correct != Correctness.NotGuessed}
                             >Validate</button
                         >
                     </td>
                     <td>
-                        <button
-                            on:click={reveal}
-                            class="red"
-                            disabled={correct != Correctness.NotGuessed}
-                            >IDK</button
-                        >
+                        <button on:click={reveal} class="red" disabled={correct != Correctness.NotGuessed}>IDK</button>
                     </td>
                     <td>
-                        <button
-                            on:click={takeToApiLink}
-                            class="blue"
-                            disabled={correct != Correctness.NotGuessed}
+                        <button on:click={takeToApiLink} class="blue" disabled={correct != Correctness.NotGuessed}
                             >API</button
                         >
                     </td>
@@ -188,7 +177,6 @@
             width: 100%;
         }
     }
-
     .element table {
         margin: auto;
         width: 10vw;
