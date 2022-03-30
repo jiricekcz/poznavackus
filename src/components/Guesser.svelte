@@ -171,6 +171,12 @@
         margin: auto;
         height: 60vh;
     }
+    @media only screen and (max-width: 700px) {
+        .element img {
+            height: auto;
+            width: 100%;
+        }
+    }
     .element table {
         margin: auto;
         width: 10vw;
