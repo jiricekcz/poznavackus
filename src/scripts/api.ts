@@ -23,7 +23,7 @@ namespace API {
 
         public async getCollection(id: number): Promise<Collection> {
             if (id >= this.collectionCount)
-                throw new Error("Invalid Collection ID.");
+                throw new Error("Invalid Collection ID:" + id);
             if (this.collectionCache[id]) {
                 return this.collectionCache[id];
             }
