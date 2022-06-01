@@ -49,7 +49,7 @@ namespace API {
         }
 
         async getElement(id: number): Promise<Element> {
-            if (id >= this.elementCount) throw new Error("Invalid Element ID.");
+            if (id >= this.elementCount) throw new Error("Invalid Element ID: " + id);
             if (this.elementCache[id]) {
                 return this.elementCache[id];
             }
